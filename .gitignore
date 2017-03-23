@@ -1,0 +1,71 @@
+/* 
+Sensitive Wearable Project
+Roach
+Yovska Moreno
+GDES-3015-001 Wearable Computing
+OCAD University 
+Created on March 22nd 2017
+Based on: 
+Using a Pohotocell, by Lady Ada, https://learn.adafruit.com/photocells/using-a-photocell
+Interdimensional Beetle Who Hates Humans Fashion Look, by Yovska
+How to drive a vibration motor with Arduino and Genuino
+https://www.precisionmicrodrives.com/tech-blog/2016/05/16/how-drive-vibration-motor-arduino-and-genuino
+Simple Arduino and HC-SR04 Example, by jvester
+http://www.instructables.com/id/Simple-Arduino-and-HC-SR04-Example/?ALLSTEPS#intro
+*/
+int photocellPin = 0;     // the cell and 10K pulldown are connected to a0
+int photocellReading;     // the analog reading from the sensor divider
+int BUZZpin = 10;          // connect Red LED to pin 11 (PWM pin)
+#define trigPin 13
+#define echoPin 9
+int VIBRATEpin = 11;
+
+void setup(void) {
+  // We'll send debugging information via the Serial monitor
+  Serial.begin(9600);   
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+}
+ 
+void loop(void) {
+   // put your main code here, to run repeatedly:
+ long duration, distance;
+  digitalWrite(trigPin, LOW);  // Added this line
+  delayMicroseconds(2); // Added this line
+  digitalWrite(trigPin, HIGH);
+//  delayMicroseconds(1000); - Removed this line
+  delayMicroseconds(10); // Added this line
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration/2) / 29.1;
+  Serial.println(distance);
+  
+ if (distance < 20 && distance > 6) {  
+digitalWrite(VIBRATEpin, HIGH);
+delay(100);
+Serial.println("very close object");
+}
+else if (distance > 20 && distance < 60) {  
+digitalWrite(VIBRATEpin, LOW);
+delay(100);
+Serial.println("kinda close object");
+  photocellReading = analogRead(photocellPin);  
+ 
+  Serial.print("Analog reading = ");
+  Serial.println(photocellReading);     // the raw analog reading
+
+if (photocellReading < 400) {
+    digitalWrite(BUZZpin, LOW);    
+    Serial.println(" - darker");
+    delay(500);
+    
+
+} else if (photocellReading < 600) {
+    digitalWrite(BUZZpin, HIGH);
+    Serial.println(" - light");
+    delay(500);
+  
+
+}
+}
+}
